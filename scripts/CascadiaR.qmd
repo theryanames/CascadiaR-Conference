@@ -259,7 +259,7 @@ data(iris)
 lessR::BarChart(data = iris, x = Species, y = Petal.Length, stat = "mean")
 ```
 
-#### Mauro Lepore: Creating a better universe with dverse
+##### Mauro Lepore: Creating a better universe with dverse
 
 Site: <https://maurolepore.github.io/dverse/>
 
@@ -291,8 +291,6 @@ knitr::kable(tail(docs))
 #### Lindsay Dickey: Simplify repetitive report creation
 
 #### Frank Aragona: Language Translation at Scale: Automating Bulk Document Translation with R and Quarto
-
-#### 
 
 ## Development in R: Evolution, Automation, and Adoption
 
@@ -377,9 +375,11 @@ knitr::kable(tail(docs))
 
 ## R in Action: Metadata, Integration, and (more) Workflows
 
-#### Peter Geissert: Metadata Driven Data Science (works with Andy Nunez)
+#### Peter Geissert: Metadata Driven Data Science 
 
 -   OHA - data modernization - public health division, EMS
+
+-   Mentioned working with Andey Nunes-Brewster
 
 -   Build metadata for data science projects
 
@@ -407,7 +407,7 @@ knitr::kable(tail(docs))
 
 ### Lightning Talks!
 
-#### Samer Hijjazi: Navigating the BLS API with R: A Step-by-Step Guide
+##### Samer Hijjazi: Navigating the BLS API with R: A Step-by-Step Guide
 
 -   data usually in a time series format (monthly)
 
@@ -452,43 +452,75 @@ unrate_df <- data.frame(
 print(unrate_df)
 ```
 
-#### Faycal Ounacer: Assessing the Impact of Coastal Upwelling on Fisheries: Insights from the Canary Current System
+##### Faycal Ounacer: Assessing the Impact of Coastal Upwelling on Fisheries: Insights from the Canary Current System
 
--   
-
-#### L. K. Borland: Decoding R needs: Bridging the gap with university library workshops 
-
--   
+#### L. K. Borland: Decoding R needs: Bridging the gap with university library workshops
 
 #### R-Ladies+: Returning to Portland this year!
-
--   
 
 ## R in Public Health: From Dashboards to Healthcare Access
 
 #### Ariane Erickson: Top Features Every Public Health Dashboard Needs (and how to build them)
 
-#### Arilene Novak & Andie Hendrick: Workshop to Workflow: Automizing Weekly Respiratory Reports with Quarto
+-   <https://oregoninjurydata.shinyapps.io/overdose/>
+
+-   Works a \@ OHA, developed injury dashboards (Kevin and I met with Ariane last year)
+
+-   Accessibility design added in V2
+
+    -   resource: <https://www.jumpingrivers.com/blog/accessible-shiny-standards-wcag/>
+
+-   Moved tabsets down from banner/logo area at top into the white main page area
+
+#### Arilene Novak & Andie Hendrick: Workshop to Workflow: Automating Weekly Respiratory Reports with Quarto
+
+-   OHA epis
+
+-   Work with Andey Nunes-Brewster
+
+-   Timeline
+
+    -   Oct - Apr - main respiratory season
+
+    -   May - June - CDC special projects, data cleaning
+
+    -   July - Sept - Modernizations projects
+
+-   FluBites
+
+    -   Previous workflow: REDCap -\> sas -\> excel -\> word
+
+    -   Current workflow: REDCap -\> R / quarto
+
+    -   flextable & sf is used
+
+    -   used Hemmingway App for readability and Leonardo for color analysis
+
+-   Will be working on an API with REDCap
+
+-   Extend this type of workflow to yearly hospitalization reports
+
+-   Create internal Quarto dashboard for surveillance metrics
 
 #### Alec Kretchun: Evaluating access to healthcare: a modern spatial data workflow in R/python
 
-#### 💡 R Code Testing Playground
+-   Healthcare networks
+
+    -   physical 'footprint' of care
+
+-   Network adequacy - ability to provide access to care - to evaluate healthcare access
+
+-   Stack: EHR data -\> PostGRES -\> Plumber API -\> Shiny & Quarto
+
+-   Determine catchment area & origin / destination analysis
+
+-   ArcGIS Pro API & use reticulate for internal R pkg
+
+-   
+
+## 💡 R Code Testing Playground
 
 Test snippets, packages, or ideas mentioned in sessions. Code blocks can be executed directly!
-
-```{r}
-# Example: Set up your environment
-library(tidyverse)
-```
-
-```{r}
-# Example: Try out code from a talk
-df <- tibble(
-  name = c("Alice", "Bob"),
-  value = c(10, 20)
-)
-df %>% mutate(value2 = value * 2)
-```
 
 ```{r}
 library(openai)
@@ -511,43 +543,11 @@ answer = create_chat_completion(
 )
 ```
 
-------------------------------------------------------------------------
-
-# 📌 Key R Packages & Tools
-
-| Package    | Purpose/Notes             | Useful Links               |
-|------------|---------------------------|----------------------------|
-| tidyverse  | Data wrangling & plotting | https://www.tidyverse.org/ |
-| data.table | High-performance data ops | https://r-datatable.com/   |
-| quarto     | Publishing & reporting    | https://quarto.org/        |
-|            |                           |                            |
-
-------------------------------------------------------------------------
-
-# 🖼️ Figures & Visualizations
-
-```{r fig.cap='Sample plot from session'}
-plot(mtcars$mpg, mtcars$hp,
-     main = "MPG vs Horsepower",
-     xlab = "Miles Per Gallon",
-     ylab = "Horsepower",
-     pch = 19,
-     col = 'steelblue')
-```
-
-------------------------------------------------------------------------
-
-# ✅ Action Items & Next Steps
+## ✅ Action Items & Next Steps
 
 -   [ ] Try package mall
 -   [ ] Connect with speaker Skyler
 -   [ ] Revisit session on advanced plotting
-
-------------------------------------------------------------------------
-
-# 📚 Additional Notes
-
-Add anything else you want to remember!
 
 ------------------------------------------------------------------------
 
