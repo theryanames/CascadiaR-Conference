@@ -1,0 +1,58 @@
+---
+title: "CascadiaR"
+format: html
+editor: visual
+---
+
+## CascadiaR Conference
+
+### Keynote: David Keyes
+
+```{r}
+library(rvest)
+library(tidyverse)
+
+read_html("https://en.wikipedia.org/wiki/List_of_FIFA_World_Cup_finals") |>
+  html_elements("table") |>
+  pluck(4) |>
+  html_table() |>
+  select(-Ref.)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+### David Gerbing: Simplified Data Analysis
+
+```{r}
+library(lessR)
+
+data(iris)
+
+
+lessR::BarChart(data = iris, x = Species, y = Petal.Length, stat = "mean")
+```
+
+### Mauro Lepore: Creating a better universe with dverse
+
+Site: <https://maurolepore.github.io/dverse/>
+
+```{r}
+library(dverse)
+# Universe
+library(glue)
+library(tibble)
+
+packages <- c("glue", "tibble")
+template <- "https://{package}.tidyverse.org/reference/{topic}.html"
+docs <- document_universe(packages, template)
+
+docs
+
+knitr::kable(tail(docs))
+```

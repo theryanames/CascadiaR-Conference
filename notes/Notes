@@ -1,0 +1,39 @@
+Conference, June 21, 2025
+
+David Keyes - Keynote
+https://rfortherestofus.com/2025/06/twenty-five-things
+
+
+Building Smarter R Workflows
+* Yan Liu: Leveraging Large Language Models in R: Practical Applications with {ellmer}
+    * Incorporates a number of LLMs
+* David Gerbing: Simplified Data Analysis
+* Mauro Lepore: Creating a better universe with dverse
+
+
+Lightning Talks! Automation Edition
+* Megan Holtorf: Taking Action While You Sleep: Using GitHub Actions to Schedule Email Updates
+* Lindsay Dickey: Simplify repetitive report creation
+* Frank Aragona: Language Translation at Scale: Automating Bulk Document Translation with R and Quarto
+
+Development in R: Evolution, Automation, and Adoption
+* Jonathan McPherson: 10 Years of RStudio and What Happens Next
+* Ben Matheson: Supercharge your work with Github Actions for R
+* Dror Berel: From Roadblocks to Breakthroughs: Navigating the Challenges of Adopting New Open Source Tools
+
+R in Action: Metadata, Integration, and (more) Workflows
+* Peter Geissert: Metadata Driven Data Science
+* Hanna Winter: Introduce R to your other friends (or using R as a component in workflows)
+* Evan Landman: Developing reproducible transit analysis with R
+
+Lightning Talks!
+* Samer Hijjazi: Navigating the BLS API with R: A Step-by-Step Guide
+* Faycal Ounacer: Assessing the Impact of Coastal Upwelling on Fisheries: Insights from the Canary Current System
+* L. K. Borland: Decoding R needs: Bridging the gap with university library workshops
+* R-Ladies+: Returning to Portland this year!
+
+
+R in Public Health: From Dashboards to Healthcare Access
+* Ariane Erickson: Top Features Every Public Health Dashboard Needs (and how to build them)
+* Arilene Novak & Andie Hendrick: Workshop to Workflow: Automizing Weekly Respiratory Reports with Quarto
+* Alec Kretchun: Evaluating access to healthcare: a modern spatial data workflow in R/python
