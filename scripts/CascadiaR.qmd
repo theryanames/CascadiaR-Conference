@@ -1,12 +1,27 @@
 ---
 title: "CascadiaR"
-format: html
+date: "`r Sys.Date()`"
+format:
+  html:
+    code-fold: true
+    toc: true
+    toc-location: left
+    code-copy: true
+    theme: cosmo
+    page-layout: full
+    embed-resources: true
 editor: visual
 ---
 
-## CascadiaR Conference
+# CascadiaR Conference
 
-### Keynote: David Keyes
+📝 Conference Session Notes
+
+## Keynote: 25 Things You Can Do in R
+
+#### David Keyes
+
+**Scrape Things**
 
 ```{r}
 library(rvest)
@@ -19,15 +34,221 @@ read_html("https://en.wikipedia.org/wiki/List_of_FIFA_World_Cup_finals") |>
   select(-Ref.)
 ```
 
+**Plot Theme**
+
 ```{r}
+theme_dk <- function(base_family = "Helvetica", base_size = 14) {
+  theme_dk <-
+    ggplot2::theme_minimal(
+      base_size = base_size,
+      base_family = base_family
+    ) +
+    ggplot2::theme(
+      panel.grid.minor = ggplot2::element_blank(),
+      panel.grid.major = ggplot2::element_line(
+        color = "grey90",
+        linewidth = 0.5,
+        linetype = "dashed"
+      ),
+      axis.ticks = ggplot2::element_blank(),
+      axis.text = ggplot2::element_text(
+        color = "grey50",
+        size = ggplot2::rel(0.8)
+      ),
+      axis.title = ggplot2::element_blank(),
+      plot.title.position = "plot",
+      plot.title = ggplot2::element_text(
+        face = "bold",
+        size = ggplot2::rel(1.5)
+      ),
+      plot.subtitle = ggplot2::element_text(
+        color = "grey40",
+        size = ggplot2::rel(1.1)
+      ),
+      plot.caption = ggplot2::element_text(
+        color = "grey50",
+        margin = ggplot2::margin(t = 20)
+      ),
+      plot.margin = ggplot2::margin(10, 10, 10, 10),
+      strip.text = ggplot2::element_text(
+        color = "grey40",
+        size = ggplot2::rel(0.9)
+      ),
+      panel.spacing = ggplot2::unit(2, "lines")
+    )
+
+  theme_dk
+}
 
 ```
 
 ```{r}
+library(ggplot2)
+data(iris)
+
+# Basic bar plot: count of each Species in iris using new theme
+ggplot(iris, aes(x = Species)) +
+  geom_bar(fill = "steelblue") +
+  labs(title = "Count of Each Species in the Iris Dataset",
+       x = "Species",
+       y = "Count") +
+  theme_dk()
+```
+
+**Tidycensus**
+
+```{r}
+library(tidycensus)
+
+median_income_by_county <-
+  get_acs(
+    geography = "county",
+    variables = c(median_income = "B19013_001"),
+    geometry = TRUE
+  )
+```
+
+**Interactive Mapping**
+
+```{r}
+library(mapgl)
+
+maplibre(bounds = median_income_by_county) |>
+  add_fill_layer(
+    source = median_income_by_county,
+    fill_color = "#7570b3",
+    fill_opacity = 0.5,
+    tooltip = "library",
+    id = "portland_libraries"
+  ) |>
+  add_circle_layer(
+    source = median_income_by_county,
+    circle_color = match_expr(
+      "has_nearby_library",
+      values = c(
+        "Within one mile of library",
+        "Not within one mile of library"
+      ),
+      stops = c(
+        "#1b9e77",
+        "#d95f02"
+      )
+    ),
+    tooltip = "school",
+    id = "schools"
+  ) |>
+  add_categorical_legend(
+    values = c(
+      "Within one mile of library",
+      "Not within one mile of library"
+    ),
+    legend_title = NULL,
+    colors = c(
+      "#1b9e77",
+      "#d95f02"
+    ),
+    circular_patches = TRUE
+  )
+```
+
+**Ze Email**
+
+```{r}
+library(tidyverse)
+library(quarto)
+library(gmailr)
+
+rendered_report <- str_glue("covid-business-relief-contact-log-{today()}.html")
+
+quarto_render(
+  input = "report.qmd",
+  output_file = rendered_report
+)
+
+gm_auth_configure()
+gm_auth(email = TRUE, cache = ".secret")
+
+email_report <-
+  gm_mime() |>
+  gm_to("Joe Schmoe <joeschmoe@prosperportland.us>") |>
+  gm_from("David Keyes <david@rfortherestofus.com>") |>
+  gm_subject("COVID Business Relief Contact Log") |>
+  gm_text_body("See attached") |>
+  gm_attach_file(rendered_report)
+
+gm_send_message(email_report)
+
 
 ```
 
-### David Gerbing: Simplified Data Analysis
+**AI tools - [Mall](https://mlverse.github.io/mall/)** **& [Ellmer](https://ellmer.tidyverse.org)**
+
+```{r}
+library(mall)
+library(ellmer)
+```
+
+```{r}
+chat <- chat_openai(model = "gpt-4.1")
+. <- chat$chat("Who created R?", echo = FALSE)
+chat
+
+token_usage()
+```
+
+```{r}
+chat <- chat_openai()
+#> Using model = "gpt-4o".
+llm_use(chat)
+```
+
+```{r}
+library(tidyverse)
+library(mall)
+
+survey_spanish <-
+  read_csv("https://raw.githubusercontent.com/rfortherestofus/twenty-five-things/refs/heads/main/data/survey_spanish.csv")	  
+
+survey_translated <-
+  survey_spanish |>
+  llm_translate(spanish, language = "English", pred_name = "english")
+
+
+```
+
+```{r}
+survey_translated_summary <-
+  survey_translated |>
+  llm_summarize(english, max_words = 5, pred_name = "summary")
+```
+
+```{r}
+library(ellmer)
+
+identify_themes <- function(text) {
+  chat <- chat_openai(
+    system_prompt = "You are a sociologist,
+    looking for the top three themes in the responses to a survey.
+    Each response is separated by \n"
+  )
+
+  chat$chat(text)
+}
+
+survey_translated_combined <-
+  survey_translated |>
+  pull(english) |>
+  paste(collapse = "\n")
+
+survey_translated_combined |>
+  identify_themes()
+```
+
+Course: <https://rfortherestofus.com/courses/ai>
+
+## Building Smarter R Workflows
+
+#### **David Gerbing: Simplified Data Analysis**
 
 ```{r}
 library(lessR)
@@ -38,7 +259,7 @@ data(iris)
 lessR::BarChart(data = iris, x = Species, y = Petal.Length, stat = "mean")
 ```
 
-### Mauro Lepore: Creating a better universe with dverse
+#### Mauro Lepore: Creating a better universe with dverse
 
 Site: <https://maurolepore.github.io/dverse/>
 
@@ -56,3 +277,280 @@ docs
 
 knitr::kable(tail(docs))
 ```
+
+## Lightning Talks! Automation Edition
+
+#### Megan Holtorf: Taking Action While You Sleep: Using GitHub Actions to Schedule Email Updates
+
+-   Pull Calendar updates in and send emails
+
+-   Use Quarto and blastula - *automagically*
+
+-   Find low risk learning opportunities
+
+#### Lindsay Dickey: Simplify repetitive report creation
+
+#### Frank Aragona: Language Translation at Scale: Automating Bulk Document Translation with R and Quarto
+
+#### 
+
+## Development in R: Evolution, Automation, and Adoption
+
+#### Jonathan McPherson: 10 Years of RStudio and What Happens Next
+
+-   RStudio is built for single purpose
+
+-   Engineers are connected to the end users
+
+-   Addins introduced in 2016 and while the underlying tech did not evolve much, the user creation did
+
+-   Limitations: single session; single language; limited IDE features
+
+-   Thus, Positron
+
+    -   Composable open tools - pulled certain features from RStudio make them modular
+
+-   AI features in IDE are powerful. Keep adding. But it's just a tool.
+
+#### Ben Matheson: Supercharge your work with Github Actions for R
+
+<https://github.com/benmatheson/snowfall_report>
+
+-   Anatomy of Actions: Workflow -\> Events -\> Jobs -\> Steps
+
+-   snow_report_action.yml
+
+    ```{yaml}
+    n:
+      schedule:
+        - cron:  "0 0 * * *"
+      workflow_dispatch:
+
+    name: snowfall_report
+
+    jobs: 
+
+      create_report:
+        runs-on: ubuntu-latest
+        env:
+           WXTOKEN: ${{ secrets.WXTOKEN }}
+
+        steps:
+        - uses: actions/checkout@v4
+
+        - uses: r-lib/actions/setup-r@v2
+          with:
+            r-version: '4.5.0'
+
+        - uses: quarto-dev/quarto-actions/setup@v2
+          with:
+            version: 1.4.515
+
+        - uses: r-lib/actions/setup-r-dependencies@v2
+          with:
+            cache-version: 1
+
+        - uses: quarto-dev/quarto-actions/render@v2
+          with:
+            to: html
+
+        - name: Commit Data
+          run: |
+            git config --local user.email "actions@github.com"
+            git config --local user.name "GitHub Actions"
+            git add snowfall.html
+            git commit -m "snowfall" || echo "No changes to commit"
+            git push origin || echo "No changes to commit"-
+    ```
+
+-   uses: actions/checkout\@v2 (use an action someone created)
+
+-   List of actions [r-lib/actions](https://github.com/r-lib/actions)
+
+-   Repository secrets - keep your credentials there using environmental variables
+
+-   Checkout: <https://github.com/benmatheson/r-github-actions-starter>
+
+#### Dror Berel: From Roadblocks to Breakthroughs: Navigating the Challenges of Adopting New Open Source Tools
+
+-   Scrolly-Telling failure and a way through
+
+## R in Action: Metadata, Integration, and (more) Workflows
+
+#### Peter Geissert: Metadata Driven Data Science (works with Andy Nunez)
+
+-   OHA - data modernization - public health division, EMS
+
+-   Build metadata for data science projects
+
+-   Data system is not software. Software is the substrate. It is an organized collection of symbols and methods
+
+-   Metadata repository - build generic functions
+
+-   Extract and save
+
+    -   4 objects: data object, data dictionary, data crosswalk, table name
+
+    -   Key list is then passed to the db extract function
+
+-   Functions are nested
+
+-   Functions can be used with OHA's trauma data (OTR) and EMS data (OR-EMSIS)
+
+#### Hanna Winter: Introduce R to your other friends (or using R as a component in workflows)
+
+-   Send plots to colleagues with their data. Eyes on the data is essential.
+
+-   Use R at different stages in the workflow - early pre-processing, flat file storage, advanced calculations & data products.
+
+#### Evan Landman: Developing reproducible transit analysis with R
+
+### Lightning Talks!
+
+#### Samer Hijjazi: Navigating the BLS API with R: A Step-by-Step Guide
+
+-   data usually in a time series format (monthly)
+
+-   series id represents type of data (CU = Consumer Price Index, U = unadjusted for season, SAF = item code, etc.)
+
+-   Use httr2 to submit API requests
+
+```{r}
+
+# Install and load httr2 if you haven't already
+# install.packages("httr2")
+library(httr2)
+library(jsonlite)
+
+# BLS API endpoint
+url <- "https://api.bls.gov/publicAPI/v2/timeseries/data/"
+
+# Request body (as a list)
+request_body <- list(
+  seriesid = list("LNS14000000"),
+  startyear = "2023",
+  endyear = "2024"
+)
+
+# Create and send the request
+resp <- request(url) |>
+  req_body_json(request_body) |>
+  req_headers(`Content-Type` = "application/json") |>
+  req_perform()
+
+# Parse JSON response
+bls_data <- resp |>
+  resp_body_json()
+
+# Extract and print unemployment rate data
+unrate <- bls_data$Results$series[[1]]$data
+unrate_df <- data.frame(
+  year = sapply(unrate, `[[`, "year"),
+  period = sapply(unrate, `[[`, "period"),
+  value = as.numeric(sapply(unrate, `[[`, "value"))
+)
+print(unrate_df)
+```
+
+#### Faycal Ounacer: Assessing the Impact of Coastal Upwelling on Fisheries: Insights from the Canary Current System
+
+-   
+
+#### L. K. Borland: Decoding R needs: Bridging the gap with university library workshops 
+
+-   
+
+#### R-Ladies+: Returning to Portland this year!
+
+-   
+
+## R in Public Health: From Dashboards to Healthcare Access
+
+#### Ariane Erickson: Top Features Every Public Health Dashboard Needs (and how to build them)
+
+#### Arilene Novak & Andie Hendrick: Workshop to Workflow: Automizing Weekly Respiratory Reports with Quarto
+
+#### Alec Kretchun: Evaluating access to healthcare: a modern spatial data workflow in R/python
+
+#### 💡 R Code Testing Playground
+
+Test snippets, packages, or ideas mentioned in sessions. Code blocks can be executed directly!
+
+```{r}
+# Example: Set up your environment
+library(tidyverse)
+```
+
+```{r}
+# Example: Try out code from a talk
+df <- tibble(
+  name = c("Alice", "Bob"),
+  value = c(10, 20)
+)
+df %>% mutate(value2 = value * 2)
+```
+
+```{r}
+library(openai)
+```
+
+```{r}
+answer = create_chat_completion(
+  model = "gpt-4o-mini",
+  temperature = 0,
+  messages = list(
+    list(
+      "role" = "system",
+      "content" = "You are a professional translator that helps me translate into other languages."
+    ),
+    list(
+      "role" = "user",
+      "content" = "Please translate this text in to French: I invite you to come to my birthday party on 23 of april, let me know if you can make it!"
+    )
+  )
+)
+```
+
+------------------------------------------------------------------------
+
+# 📌 Key R Packages & Tools
+
+| Package    | Purpose/Notes             | Useful Links               |
+|------------|---------------------------|----------------------------|
+| tidyverse  | Data wrangling & plotting | https://www.tidyverse.org/ |
+| data.table | High-performance data ops | https://r-datatable.com/   |
+| quarto     | Publishing & reporting    | https://quarto.org/        |
+|            |                           |                            |
+
+------------------------------------------------------------------------
+
+# 🖼️ Figures & Visualizations
+
+```{r fig.cap='Sample plot from session'}
+plot(mtcars$mpg, mtcars$hp,
+     main = "MPG vs Horsepower",
+     xlab = "Miles Per Gallon",
+     ylab = "Horsepower",
+     pch = 19,
+     col = 'steelblue')
+```
+
+------------------------------------------------------------------------
+
+# ✅ Action Items & Next Steps
+
+-   [ ] Try package mall
+-   [ ] Connect with speaker Skyler
+-   [ ] Revisit session on advanced plotting
+
+------------------------------------------------------------------------
+
+# 📚 Additional Notes
+
+Add anything else you want to remember!
+
+------------------------------------------------------------------------
+
+# 🔖 Appendix
+
+*Paste slides, extra code, or useful references here.*
